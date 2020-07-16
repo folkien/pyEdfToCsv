@@ -3,6 +3,32 @@ import pyedflib
 import numpy as np
 import argparse
 
+
+def signalsToCsv(filename, labels, signals):
+    ''' Export all signals to single .csv'''
+    filename = filename+'.csv'
+    with open(filename, 'w+') as f:
+        labels_row = ','.join(labels)
+        f.write(labels_row)
+
+        # Get max samples length
+        maxLength = 0
+        for i in range(len(signals)):
+            maxLength = max(maxLength, len(signals[i]))
+
+        # Get max samples
+
+
+def signalsToCsvs(filename, labels, signals):
+    ''' Export all signals to multiple .csv'''
+    for i in range(len(signals)):
+        filename = filename+labels[i]+'.csv'
+        with open(filename, 'w+') as f:
+            f.write('%s\n' % labels[i])
+            for sample in signals[i]:
+                f.write('%2.2f,\n' % sample)
+
+        # Get max samples
 # Arguments and config
 # #####################################################
 parser = argparse.ArgumentParser()
@@ -16,8 +42,8 @@ f = pyedflib.EdfReader(args.input)
 print('Opened', args.input)
 n = f.signals_in_file
 print('%u signals in file.' % (n))
-signal_labels = f.getSignalLabels()
-print('Signal labels in file : ', signal_labels)
+labels = f.getSignalLabels()
+print('Signal labels in file : ', labels)
 
 signals = []
 for i in np.arange(n):
@@ -27,4 +53,4 @@ for i in np.arange(n):
 
 # Create .csv
 print('Creation of .csv.')
-print(sigbufs)
+signalsToCsvs(args.input, labels, signals)
