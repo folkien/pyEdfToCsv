@@ -26,7 +26,10 @@ def signalsToCsvs(filename, labels, signals):
         with open(filepath, 'w+') as f:
             f.write('%s\n' % labels[i])
             for sample in signals[i]:
-                f.write('%2.2f,\n' % sample)
+                text = '%2.2f\n' % sample
+                if (args.decimalpoint is not None):
+                    text = text.replace('.', ',')
+                f.write(text)
 
 
 # Arguments and config
@@ -34,6 +37,8 @@ def signalsToCsvs(filename, labels, signals):
 parser = argparse.ArgumentParser()
 parser.add_argument('-i', '--input', type=str,
                     required=True, help='Input EDF file')
+parser.add_argument('-d', '--decimalpoint', action='store_true',
+                    required=False, help='')
 args = parser.parse_args()
 
 

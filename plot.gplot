@@ -1,0 +1,11 @@
+# Plot All SD cards
+set key autotitle columnhead
+set datafile separator ","
+set key title ""
+set grid
+set xlabel "Sample[n]"
+set ylabel "Value"
+plot '14-12-27.EDFAccelerometer_X.csv' using 1:1 with lines
+replot
+# Pause
+pause -1
