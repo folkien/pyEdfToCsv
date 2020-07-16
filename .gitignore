@@ -128,3 +128,4 @@ dmypy.json
 # Pyre type checker
 .pyre/
 *.edf
+14-12-27.EDF
