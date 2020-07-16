@@ -27,7 +27,7 @@ def signalsToCsvs(filename, labels, signals):
             f.write('%s\n' % labels[i])
             for sample in signals[i]:
                 text = '%2.2f\n' % sample
-                if (args.decimalpoint is not None):
+                if (args.decimalpoint):
                     text = text.replace('.', ',')
                 f.write(text)
 
