@@ -2,6 +2,7 @@
 import pyedflib
 import numpy as np
 import argparse
+import datetime
 
 # defaults
 separator = ';'
@@ -30,14 +31,29 @@ def signalsToCsvs(filename, labels, signals, sampleRates):
             # Labels
             f.write('Time[s]%c%s\n' % (separator, labels[i]))
 
-            # Samples
-            time = 0
+            # Prepare time values
+            if (args.timeAbsolute):
+                time = startTime
+                delta = datetime.timedelta(seconds=1.0/sampleRates[i])
+            else:
+                time = 0
+                delta = 1.0/sampleRates[i]
+
+            # Samples saving
             for sample in signals[i]:
-                text = '%2.4f%c%2.2f\n' % (time, separator, sample)
+                if (args.timeAbsolute):
+                    # Absolute time used
+                    text = '%s%c%2.2f\n' % (time.strftime(
+                        '%H:%M:%S.%f'), separator, sample)
+                else:
+                    # Relative time used
+                    text = '%2.4f%c%2.2f\n' % (time, separator, sample)
+                time += delta
+                # Decimal mark conversion
                 if (args.decimalpoint):
                     text = text.replace('.', ',')
+                # Save
                 f.write(text)
-                time += 1.0/sampleRates[i]
 
 
 # Arguments and config
@@ -49,6 +65,8 @@ parser.add_argument('-s', '--separator', type=str,
                     required=False, help='Data CSV separator')
 parser.add_argument('-d', '--decimalpoint', action='store_true',
                     required=False, help='')
+parser.add_argument('-t', '--timeAbsolute', action='store_true',
+                    required=False, help='Default behaviour is relative time printing (First sample is 0s). Absolute time prints time according to record start time.')
 args = parser.parse_args()
 
 if (args.separator is not None):
@@ -62,8 +80,8 @@ n = f.signals_in_file
 print('(File) %u signals in file.' % (n))
 labels = f.getSignalLabels()
 print('(File) Signal labels in file : ', labels)
-start = f.getStartdatetime()
-print('(File) Start of recording', start)
+startTime = f.getStartdatetime()
+print('(File) Start of recording', startTime)
 
 sampleRates = f.getSampleFrequencies()
 signals = []
