@@ -52,15 +52,20 @@ if (args.separator is not None):
 
 # Open EDF file
 f = pyedflib.EdfReader(args.input)
-print('Opened', args.input)
+print('(File) Opened', args.input)
 n = f.signals_in_file
-print('%u signals in file.' % (n))
+print('(File) %u signals in file.' % (n))
 labels = f.getSignalLabels()
-print('Signal labels in file : ', labels)
+print('(File) Signal labels in file : ', labels)
+start = f.getStartdatetime()
+print('(File) Start of recording', start)
 
 signals = []
 for i in np.arange(n):
-    print('Reading signal %u, samples %u' % (i, f.getNSamples()[i]))
+    print('(Signal) Reading signal %u `%s`, sampling freqeuncy %u, samples %u' % (
+        i, labels[i], f.getSampleFrequency(i), f.getNSamples()[i]))
+    print('(Signal) Signal header : ', f.getSignalHeader(i))
+    print('')
     signal = f.readSignal(i)
     signals.append(signal)
 
