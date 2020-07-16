@@ -3,12 +3,15 @@ import pyedflib
 import numpy as np
 import argparse
 
+# defaults
+separator = ';'
+
 
 def signalsToCsv(filename, labels, signals):
     ''' Export all signals to single .csv'''
     filename = filename+'.csv'
     with open(filename, 'w+') as f:
-        labels_row = ','.join(labels)
+        labels_row = separator.join(labels)
         f.write(labels_row)
 
         # Get max samples length
@@ -37,9 +40,14 @@ def signalsToCsvs(filename, labels, signals):
 parser = argparse.ArgumentParser()
 parser.add_argument('-i', '--input', type=str,
                     required=True, help='Input EDF file')
+parser.add_argument('-s', '--separator', type=str,
+                    required=False, help='Data CSV separator')
 parser.add_argument('-d', '--decimalpoint', action='store_true',
                     required=False, help='')
 args = parser.parse_args()
+
+if (args.separator is not None):
+    separator = args.separator
 
 
 # Open EDF file
