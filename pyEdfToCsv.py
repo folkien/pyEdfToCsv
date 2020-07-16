@@ -16,19 +16,19 @@ def signalsToCsv(filename, labels, signals):
         for i in range(len(signals)):
             maxLength = max(maxLength, len(signals[i]))
 
-        # Get max samples
+        # @TODO
 
 
 def signalsToCsvs(filename, labels, signals):
     ''' Export all signals to multiple .csv'''
     for i in range(len(signals)):
-        filename = filename+labels[i]+'.csv'
-        with open(filename, 'w+') as f:
+        filepath = filename+labels[i]+'.csv'
+        with open(filepath, 'w+') as f:
             f.write('%s\n' % labels[i])
             for sample in signals[i]:
                 f.write('%2.2f,\n' % sample)
 
-        # Get max samples
+
 # Arguments and config
 # #####################################################
 parser = argparse.ArgumentParser()
