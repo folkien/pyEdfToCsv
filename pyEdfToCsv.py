@@ -44,7 +44,7 @@ def signalsToCsvs(filename, labels, signals, sampleRates):
                 if (args.timeAbsolute):
                     # Absolute time used
                     text = '%s%c%2.2f\n' % (time.strftime(
-                        '%H:%M:%S.%f'), separator, sample)
+                        '%Y-%m-%d %H:%M:%S.%f'), separator, sample)
                 else:
                     # Relative time used
                     text = '%2.4f%c%2.2f\n' % (time, separator, sample)
