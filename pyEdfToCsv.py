@@ -22,17 +22,22 @@ def signalsToCsv(filename, labels, signals):
         # @TODO
 
 
-def signalsToCsvs(filename, labels, signals):
+def signalsToCsvs(filename, labels, signals, sampleRates):
     ''' Export all signals to multiple .csv'''
     for i in range(len(signals)):
         filepath = filename+labels[i]+'.csv'
         with open(filepath, 'w+') as f:
-            f.write('%s\n' % labels[i])
+            # Labels
+            f.write('Time[s]%c%s\n' % (separator, labels[i]))
+
+            # Samples
+            time = 0
             for sample in signals[i]:
-                text = '%2.2f\n' % sample
+                text = '%2.4f%c%2.2f\n' % (time, separator, sample)
                 if (args.decimalpoint):
                     text = text.replace('.', ',')
                 f.write(text)
+                time += 1.0/sampleRates[i]
 
 
 # Arguments and config
@@ -60,6 +65,7 @@ print('(File) Signal labels in file : ', labels)
 start = f.getStartdatetime()
 print('(File) Start of recording', start)
 
+sampleRates = f.getSampleFrequencies()
 signals = []
 for i in np.arange(n):
     print('(Signal) Reading signal %u `%s`, sampling freqeuncy %u, samples %u' % (
@@ -71,4 +77,4 @@ for i in np.arange(n):
 
 # Create .csv
 print('Creation of .csv.')
-signalsToCsvs(args.input, labels, signals)
+signalsToCsvs(args.input, labels, signals, sampleRates)
