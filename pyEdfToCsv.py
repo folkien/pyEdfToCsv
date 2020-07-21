@@ -26,7 +26,7 @@ def signalsToCsv(filename, labels, signals):
 def signalsToCsvs(filename, labels, signals, sampleRates):
     ''' Export all signals to multiple .csv'''
     for i in range(len(signals)):
-        filepath = filename+labels[i]+'.csv'
+        filepath = filename+labels[i]+'_'+sampleRates[i]+'sps.csv'
         with open(filepath, 'w+') as f:
             # Labels
             f.write('Time[s]%c%s\n' % (separator, labels[i]))
