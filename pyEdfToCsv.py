@@ -3,9 +3,12 @@ import pyedflib
 import numpy as np
 import argparse
 import datetime
+import locale
 
 # defaults
 separator = ';'
+locale.setlocale(locale.LC_ALL, '')
+decimalpoint = (locale.localeconv()['decimal_point'])
 
 
 def signalsToCsv(filename, labels, signals):
@@ -43,15 +46,16 @@ def signalsToCsvs(filename, labels, signals, sampleRates):
             for sample in signals[i]:
                 if (args.timeAbsolute):
                     # Absolute time used
-                    text = '%s%c%2.2f\n' % (time.strftime(
-                        '%Y-%m-%d %H:%M:%S.%f'), separator, sample)
+                    text = '%s%c' % (time.strftime(
+                        '%Y-%m-%d %H:%M:%S.%f'), separator)
                 else:
                     # Relative time used
-                    text = '%2.4f%c%2.2f\n' % (time, separator, sample)
+                    text = '%2.4f%c\n' % (time, separator)
                 time += delta
                 # Decimal mark conversion
-                if (args.decimalpoint):
-                    text = text.replace('.', ',')
+                if (decimalpoint == ','):
+                    text += str(sample).replace('.', ',')
+                text += '\n'
                 # Save
                 f.write(text)
 
@@ -63,14 +67,17 @@ parser.add_argument('-i', '--input', type=str,
                     required=True, help='Input EDF file')
 parser.add_argument('-s', '--separator', type=str,
                     required=False, help='Data CSV separator')
-parser.add_argument('-d', '--decimalpoint', action='store_true',
-                    required=False, help='')
+parser.add_argument('-d', '--decimalpoint', type=str,
+                    required=False, help='Decimal point character')
 parser.add_argument('-t', '--timeAbsolute', action='store_true',
                     required=False, help='Default behaviour is relative time printing (First sample is 0s). Absolute time prints time according to record start time.')
 args = parser.parse_args()
 
 if (args.separator is not None):
     separator = args.separator
+
+if (args.decimalpoint is not None):
+    decimalpoint = args.decimalpoint
 
 
 # Open EDF file
