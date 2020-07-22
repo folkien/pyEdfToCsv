@@ -26,13 +26,14 @@ def signalsToCsv(filename, labels, signals):
         # @TODO
 
 
-def signalsToCsvs(filename, labels, signals, sampleRates):
+def signalsToCsvs(filename, labels, signals, sampleRates, dimensions):
     ''' Export all signals to multiple .csv'''
     for i in range(len(signals)):
         filepath = filename+labels[i]+'_'+str(sampleRates[i])+'sps.csv'
         with open(filepath, 'w+') as f:
             # Labels
-            f.write('Time[s]%c%s\n' % (separator, labels[i]))
+            f.write('Time[s]%c%s [%s]\n' %
+                    (separator, labels[i], dimensions[i]))
 
             # Prepare time values
             if (args.timeAbsolute):
@@ -44,18 +45,22 @@ def signalsToCsvs(filename, labels, signals, sampleRates):
 
             # Samples saving
             for sample in signals[i]:
+                # DateTime to text
                 if (args.timeAbsolute):
                     # Absolute time used
                     text = '%s%c' % (time.strftime(
                         '%Y-%m-%d %H:%M:%S.%f'), separator)
                 else:
                     # Relative time used
-                    text = '%2.4f%c\n' % (time, separator)
+                    text = '%2.4f%c' % (time, separator)
                 time += delta
-                # Decimal mark conversion
-                if (decimalpoint == ','):
-                    text += str(sample).replace('.', ',')
+                # Sample to text
+                text += str(sample)
+                # EOL
                 text += '\n'
+                # Decimal mark conversion of whole line
+                if (decimalpoint == ','):
+                    text = text.replace('.', ',')
                 # Save
                 f.write(text)
 
@@ -92,6 +97,7 @@ print('(File) Start of recording', startTime)
 
 sampleRates = f.getSampleFrequencies()
 signals = []
+dimensions = []
 for i in np.arange(n):
     print('(Signal) Reading signal %u `%s`, sampling freqeuncy %u, samples %u' % (
         i, labels[i], f.getSampleFrequency(i), f.getNSamples()[i]))
@@ -99,7 +105,8 @@ for i in np.arange(n):
     print('')
     signal = f.readSignal(i)
     signals.append(signal)
+    dimensions.append(f.getPhysicalDimension(i))
 
 # Create .csv
 print('Creation of .csv.')
-signalsToCsvs(args.input, labels, signals, sampleRates)
+signalsToCsvs(args.input, labels, signals, sampleRates, dimensions)
