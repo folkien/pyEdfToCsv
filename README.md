@@ -19,3 +19,8 @@ optional arguments:
                         sample is 0s). Absolute time prints time according to
                         record start time.
 ```
+
+Example usage
+
+`./pyEdfToCsv.py -i example/11-56-29.EDF -t`
+
